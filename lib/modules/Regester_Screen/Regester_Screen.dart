@@ -12,6 +12,8 @@ class RegesterScreen extends StatelessWidget {
   var phoneController = TextEditingController();
   var nameController = TextEditingController();
 
+  RegesterScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
@@ -16,25 +17,30 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
  static HomeCubit get(context) =>BlocProvider.of(context);
- UserModel? userModel;
+  UserModel? userModel;
  void getData(){
+   emit(HomeGetUserLoading());
+   print(uId);
    FirebaseFirestore.instance
        .collection('users')
        .doc(uId)
        .get()
        .then((value) {
-
+         print(value.data());
+        userModel= UserModel.fromJson(value.data()!);
+         emit(HomeGetUserSuccess());
    }).catchError((error){
-
+       print(error.toString());
+     emit(HomeGetUserError(Error: error.toString()));
    });
  }
 
  int currentIndex = 0;
  List<Widget> Screens = [
-   FeedsScreen(),
-   ChatsScreen(),
-   UsersScreen(),
-   SettingsScreen()
+   const FeedsScreen(),
+   const ChatsScreen(),
+   const UsersScreen(),
+   const SettingsScreen()
  ];
 
  List<String> titels = [

@@ -16,6 +16,8 @@ class LoginScreen extends StatelessWidget {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
 
+  LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -30,11 +32,11 @@ class LoginScreen extends StatelessWidget {
           else if(state is LoginSuccessState){
 
             CasheHelper.SaveData(key: 'uId', value: state.uId).then((value) {
-              NavigateAndFinish(context, HomeScreen());
+              NavigateAndFinish(context,const HomeScreen());
             });
           }
         },
-        builder: (context, State) {
+        builder: (context, state) {
           return Scaffold(
               appBar: AppBar(),
               body: Form(

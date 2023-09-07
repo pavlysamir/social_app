@@ -1,57 +1,53 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/shared/styles/convert_font.dart';
+import '../../shared/components/components.dart';
 import 'cupit/home_cubit.dart';
 
-
-
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+      listener: (context, state) {},
       builder: (context, state) {
-
         var cupit = HomeCubit.get(context);
         return Scaffold(
           appBar: AppBar(
             title: Text(cupit.titels[cupit.currentIndex]),
             actions: [
-              IconButton(onPressed: (){},
-                  icon: Icon(IconBroken.Notification)),
-              IconButton(onPressed: (){},
-                  icon: Icon(IconBroken.Search)),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(IconBroken.Notification)),
+              IconButton(onPressed: () {}, icon: const Icon(IconBroken.Search)),
             ],
           ),
-          body: cupit.Screens[cupit.currentIndex],
-          bottomNavigationBar: BottomNavigationBar
-            (
+          bottomNavigationBar: BottomNavigationBar(
             currentIndex: cupit.currentIndex,
-            onTap: (index){
+            onTap: (index) {
               cupit.changeBottonNav(index);
             },
-            items: [
+            items: const [
               BottomNavigationBarItem(
-                icon: Icon(IconBroken.Home,),
-                label: 'Home'
-              ),
-              BottomNavigationBarItem(icon: Icon(IconBroken.Chat),
-                  label: 'Chat'
-              ),
-              BottomNavigationBarItem(icon: Icon(
-                IconBroken.Location
-              ),
-              label: 'Users'
-              ),
-              BottomNavigationBarItem(icon: Icon(
-                IconBroken.Setting
-              ),
-              label: 'Setting'
-              ),
+                  icon: Icon(
+                    IconBroken.Home,
+                  ),
+                  label: 'Home'),
+              BottomNavigationBarItem(
+                  icon: Icon(IconBroken.Chat), label: 'Chat'),
+              BottomNavigationBarItem(
+                  icon: Icon(IconBroken.Location), label: 'Users'),
+              BottomNavigationBarItem(
+                  icon: Icon(IconBroken.Setting), label: 'Setting'),
             ],
           ),
+          body: ConditionalBuilder(
+              condition: cupit.userModel != null,
+              builder: (context)=>cupit.Screens[cupit.currentIndex],
+              fallback: (context)=>const Center(
+                child: CircularProgressIndicator(),
+              )),
         );
       },
     );
