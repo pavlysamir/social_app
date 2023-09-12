@@ -2,6 +2,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/shared/styles/convert_font.dart';
+import '../../modules/Home_Screens/add_post_screen/add_post_view.dart';
 import '../../shared/components/components.dart';
 import 'cupit/home_cubit.dart';
 
@@ -11,7 +12,11 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(state is NewPostState){
+          navigateTo(context,const NewPostView());
+        }
+      },
       builder: (context, state) {
         var cupit = HomeCubit.get(context);
         return Scaffold(
@@ -26,7 +31,7 @@ class HomeScreen extends StatelessWidget {
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: cupit.currentIndex,
             onTap: (index) {
-              cupit.changeBottonNav(index);
+              cupit.changeButtonNav(index);
             },
             items: const [
               BottomNavigationBarItem(
@@ -37,6 +42,8 @@ class HomeScreen extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Icon(IconBroken.Chat), label: 'Chat'),
               BottomNavigationBarItem(
+                  icon: Icon(IconBroken.Paper_Upload), label: 'post'),
+              BottomNavigationBarItem(
                   icon: Icon(IconBroken.Location), label: 'Users'),
               BottomNavigationBarItem(
                   icon: Icon(IconBroken.Setting), label: 'Setting'),
@@ -44,7 +51,7 @@ class HomeScreen extends StatelessWidget {
           ),
           body: ConditionalBuilder(
               condition: cupit.userModel != null,
-              builder: (context)=>cupit.Screens[cupit.currentIndex],
+              builder: (context)=>cupit.screens[cupit.currentIndex],
               fallback: (context)=>const Center(
                 child: CircularProgressIndicator(),
               )),

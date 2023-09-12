@@ -1,14 +1,11 @@
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:social_app/models/usermodel.dart';
-import 'package:social_app/modules/Home_Screens/chats_screen.dart';
-import 'package:social_app/modules/Home_Screens/feeds_screen.dart';
-import 'package:social_app/modules/Home_Screens/settings.dart';
-import 'package:social_app/modules/Home_Screens/users.dart';
+import 'package:social_app/modules/Home_Screens/chat_screens/chats_screen.dart';
+import 'package:social_app/modules/Home_Screens/feeds_screens/feeds_screen.dart';
+import 'package:social_app/modules/Home_Screens/settings_screen/settings.dart';
+import 'package:social_app/modules/Home_Screens/users_screen/users.dart';
 import 'package:social_app/shared/constance/constance.dart';
 
 part 'home_state.dart';
@@ -36,9 +33,10 @@ class HomeCubit extends Cubit<HomeState> {
  }
 
  int currentIndex = 0;
- List<Widget> Screens = [
+ List<Widget> screens = [
    const FeedsScreen(),
    const ChatsScreen(),
+   const  Text(''),
    const UsersScreen(),
    const SettingsScreen()
  ];
@@ -46,12 +44,18 @@ class HomeCubit extends Cubit<HomeState> {
  List<String> titels = [
    'Home',
    'Chats',
+   'Add Post',
    'Users',
    'Setting'
  ];
 
- void changeBottonNav(int index){
-   currentIndex = index;
-   emit(ChangeButtonNavState());
+ void changeButtonNav(int index){
+
+   if(index ==2) {
+     emit(NewPostState());
+   }else {
+     currentIndex = index;
+     emit(ChangeButtonNavState());
+   }
  }
 }

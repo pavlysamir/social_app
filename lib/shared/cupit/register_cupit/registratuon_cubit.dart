@@ -1,12 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:social_app/models/usermodel.dart';
-import 'package:social_app/shared/cupit/login_cupit/login_state.dart';
 part 'registratuon_state.dart';
 
 class RegistratuonCubit extends Cubit<RegistratuonState> {
@@ -33,7 +31,7 @@ class RegistratuonCubit extends Cubit<RegistratuonState> {
           email: email,
           phone: phone,
           uId: credential.user!.uid,
-          isEmailVerified: false);
+          isEmailVerified: false,);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
@@ -56,12 +54,14 @@ class RegistratuonCubit extends Cubit<RegistratuonState> {
       required String email,
       required String phone,
       required String uId,
-      required bool isEmailVerified}) {
+      required bool isEmailVerified,}) {
     emit(RegisterCreateUserLoadingState());
     UserModel userModel = UserModel(
         name: name,
         phone: phone,
         email: email,
+        image: 'https://img.freepik.com/free-photo/depressed-man-crying-side-view_23-2149699062.jpg?w=996&t=st=1694137272~exp=1694137872~hmac=9f8929ae103b9cad924c6a123bd9a434c6d07ac56af8637740cdfeeea9cd17d8',
+        bio: 'write your bio...',
         uId: uId,
         isEmailVerified: isEmailVerified);
     CollectionReference users = FirebaseFirestore.instance.collection('users');

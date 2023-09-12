@@ -14,7 +14,7 @@ class FeedsScreen extends StatelessWidget {
         children: [
           Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,
-              elevation: 10,
+              elevation: 5,
               margin: const EdgeInsets.all(8),
               child: Stack(
                 alignment: Alignment.bottomLeft,

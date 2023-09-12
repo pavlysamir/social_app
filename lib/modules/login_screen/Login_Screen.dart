@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
           else if(state is LoginSuccessState){
 
             CasheHelper.SaveData(key: 'uId', value: state.uId).then((value) {
-              NavigateAndFinish(context,const HomeScreen());
+              navigateAndFinish(context,const HomeScreen());
             });
           }
         },
@@ -139,7 +139,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                               TextButton(
                                   onPressed: () {
-                                    NavigateTo(context, RegesterScreen());
+                                    navigateTo(context, RegesterScreen());
                                   },
                                   child:const Text(
                                     'REGISTER',

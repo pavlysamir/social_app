@@ -22,7 +22,7 @@ class RegesterScreen extends StatelessWidget {
       child: BlocConsumer<RegistratuonCubit, RegistratuonState>(
         listener: (context, state) {
           if(state is RegisterCreateUserSuccessState){
-            NavigateAndFinish(context, HomeScreen());
+            navigateAndFinish(context,const HomeScreen());
           }
         },
         builder: (context, state) {

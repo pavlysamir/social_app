@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/styles/convert_font.dart';
+import '../../../../shared/styles/convert_font.dart';
+
+
 
 class PostViewItem extends StatelessWidget {
   const PostViewItem({Key? key}) : super(key: key);
@@ -11,7 +13,7 @@ class PostViewItem extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10),
       child: Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        elevation: 10,
+        elevation: 5,
         margin: const EdgeInsets.symmetric(horizontal: 8),
         child: Padding(
           padding: const EdgeInsets.all(10.0),

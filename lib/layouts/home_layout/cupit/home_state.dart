@@ -13,3 +13,4 @@ class HomeGetUserError extends HomeState {
 }
 
 class ChangeButtonNavState extends HomeState{}
+class NewPostState extends HomeState{}

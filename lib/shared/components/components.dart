@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 
-void NavigateTo(context , Widget){
+void navigateTo(context , widget){
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context)=> Widget),
+    MaterialPageRoute(builder: (context)=> widget),
   );
 }
 
-void NavigateAndFinish(context , Widget){
+void navigateAndFinish(context , widget){
   Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context)=> Widget),
+      MaterialPageRoute(builder: (context)=> widget),
       (route) => false);
 }
 
