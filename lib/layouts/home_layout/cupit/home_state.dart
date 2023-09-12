@@ -8,8 +8,8 @@ class HomeInitial extends HomeState {}
 class HomeGetUserSuccess extends HomeState {}
 class HomeGetUserLoading extends HomeState {}
 class HomeGetUserError extends HomeState {
-  String Error;
-  HomeGetUserError({required this.Error});
+  String error;
+  HomeGetUserError({required this.error});
 }
 
 class ChangeButtonNavState extends HomeState{}

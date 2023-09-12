@@ -28,7 +28,7 @@ class HomeCubit extends Cubit<HomeState> {
          emit(HomeGetUserSuccess());
    }).catchError((error){
        print(error.toString());
-     emit(HomeGetUserError(Error: error.toString()));
+     emit(HomeGetUserError(error: error.toString()));
    });
  }
 
