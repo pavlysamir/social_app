@@ -5,6 +5,9 @@ import 'package:social_app/layouts/home_layout/cupit/home_cubit.dart';
 import 'package:social_app/modules/Home_Screens/settings_screen/settings_views/cover_profile_view.dart';
 import 'package:social_app/modules/Home_Screens/settings_screen/settings_views/profile_image_view.dart';
 
+import '../../../shared/components/components.dart';
+import 'edit_profile.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
 
@@ -98,7 +101,9 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Expanded(child: OutlinedButton(onPressed: (){}, child:const Text('Add photos'))),
                     const SizedBox(width: 10,),
-                    OutlinedButton(onPressed: (){}, child:const Icon(IconBroken.Edit)),
+                    OutlinedButton(onPressed: (){
+                      navigateTo(context,const EditeProfileView());
+                    }, child:const Icon(IconBroken.Edit)),
                   ],
                 )
               ],

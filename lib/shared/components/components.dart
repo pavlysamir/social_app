@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:icon_broken/icon_broken.dart';
 
 
 void navigateTo(context , widget){
@@ -45,4 +46,15 @@ Color shooseCloreToast(ColorStates state)
   }else  color = Colors.amber;
 
   return color;
+}
+
+PreferredSizeWidget defaultAppBar ({required BuildContext context,String? title,List<Widget>? actions}){
+  return AppBar(
+    leading: IconButton(
+      icon:const Icon(IconBroken.Arrow___Left_2),
+      onPressed: () {Navigator.pop(context);  },
+    ),
+    title: Text(title!),
+    actions: actions!,
+  );
 }
