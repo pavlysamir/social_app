@@ -1,61 +1,164 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social_app/models/usermodel.dart';
 import 'package:social_app/modules/Home_Screens/chat_screens/chats_screen.dart';
 import 'package:social_app/modules/Home_Screens/feeds_screens/feeds_screen.dart';
 import 'package:social_app/modules/Home_Screens/settings_screen/settings.dart';
 import 'package:social_app/modules/Home_Screens/users_screen/users.dart';
 import 'package:social_app/shared/constance/constance.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
- static HomeCubit get(context) =>BlocProvider.of(context);
+  static HomeCubit get(context) => BlocProvider.of(context);
   UserModel? userModel;
- void getData(){
-   emit(HomeGetUserLoading());
-   print(uId);
-   FirebaseFirestore.instance
-       .collection('users')
-       .doc(uId)
-       .get()
-       .then((value) {
-         print(value.data());
-        userModel= UserModel.fromJson(value.data()!);
-         emit(HomeGetUserSuccess());
-   }).catchError((error){
-       print(error.toString());
-     emit(HomeGetUserError(error: error.toString()));
-   });
- }
+  void getData() {
+    emit(HomeGetUserLoading());
+    print(uId);
+    FirebaseFirestore.instance.collection('users').doc(uId).get().then((value) {
+      print(value.data());
+      userModel = UserModel.fromJson(value.data()!);
+      emit(HomeGetUserSuccess());
+    }).catchError((error) {
+      print(error.toString());
+      emit(HomeGetUserError(error: error.toString()));
+    });
+  }
 
- int currentIndex = 0;
- List<Widget> screens = [
-   const FeedsScreen(),
-   const ChatsScreen(),
-   const  Text(''),
-   const UsersScreen(),
-   const SettingsScreen()
- ];
+  int currentIndex = 0;
+  List<Widget> screens = [
+    const FeedsScreen(),
+    const ChatsScreen(),
+    const Text(''),
+    const UsersScreen(),
+    const SettingsScreen()
+  ];
 
- List<String> titels = [
-   'Home',
-   'Chats',
-   'Add Post',
-   'Users',
-   'Setting'
- ];
+  List<String> titels = ['Home', 'Chats', 'Add Post', 'Users', 'Setting'];
 
- void changeButtonNav(int index){
+  void changeButtonNav(int index) {
+    if (index == 2) {
+      emit(NewPostState());
+    } else {
+      currentIndex = index;
+      emit(ChangeButtonNavState());
+    }
+  }
 
-   if(index ==2) {
-     emit(NewPostState());
-   }else {
-     currentIndex = index;
-     emit(ChangeButtonNavState());
-   }
- }
+  File? profileImage;
+  Future<void> getProfileImageFromDevice() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      profileImage = File(pickedImage.path);
+      emit(ProfileImagePickedSuccessState());
+    } else {
+      print('No error selected');
+      emit(ProfileImagePickedErrorState());
+    }
+  }
+
+  File? coverImage;
+  Future<void> getCoverImageFromDevice() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      coverImage = File(pickedImage.path);
+      emit(CoverImagePickedSuccessState());
+    } else {
+      print('No error selected');
+      emit(CoverImagePickedErrorState());
+    }
+  }
+
+  void uploadProfileImage(
+      {required String name,
+    required String phone,
+    required String bio,}) {
+    emit(UserUpdateLoadingState());
+    final storage = FirebaseStorage.instance;
+    storage
+        .ref()
+        .child('users/${Uri.file(profileImage!.path).pathSegments.last}')
+        .putFile(profileImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        //emit(UploadProfileImageSuccessState());
+        print(value);
+        updateUser(name:name,phone: phone,bio: bio,image: value );
+
+      }).catchError((error) {
+        emit(UploadProfileImageErrorState());
+      });
+    }).catchError((error) {
+      emit(UploadProfileImageErrorState());
+    });
+  }
+
+
+  void uploadCoverImage(
+  {required String name,
+    required String phone,
+    required String bio,}
+      ) {
+    emit(UserUpdateLoadingState());
+    final storage = FirebaseStorage.instance;
+    storage
+        .ref()
+        .child('users/${Uri.file(coverImage!.path).pathSegments.last}')
+        .putFile(coverImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        //emit(UploadCoverImageSuccessState());
+        print(value);
+        updateUser(name:name,phone: phone,bio: bio,cover: value );
+      }).catchError((error) {
+        emit(UploadCoverImageErrorState());
+      });
+    }).catchError((error) {
+      emit(UploadProfileImageErrorState());
+    });
+  }
+
+
+  void updateUser({
+    required String name,
+    required String phone,
+    required String bio,
+
+    String? cover ,
+    String? image ,
+  }){
+
+    emit(UserUpdateLoadingState());
+    UserModel model = UserModel(
+      name: name,
+      phone: phone,
+      email: userModel!.email,
+      image: image??userModel!.image,
+      cover: cover??userModel!.cover,
+      bio: bio,
+      uId: userModel!.uId,
+    );
+    FirebaseFirestore.
+    instance.
+    collection('users').
+    doc(uId).
+    update(model.toMap()).
+    then((value) {
+      getData();
+    }).
+    catchError((error){
+      print(error.toString());
+      emit(UserUpdateErrorState());
+    });
+  }
 }
