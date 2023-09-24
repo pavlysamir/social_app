@@ -163,35 +163,6 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-  void uploadPostImage(
-      {
-        required String dateTime,
-        required String text,
-      }
-      ) {
-    emit(CreatePostLoadingState());
-    final storage = FirebaseStorage.instance;
-    storage
-        .ref()
-        .child('posts/${Uri.file(postImage!.path).pathSegments.last}')
-        .putFile(postImage!)
-        .then((value) {
-      value.ref.getDownloadURL().then((value) {
-
-        print(value);
-        createPost(
-            dateTime: dateTime,
-            text: text,
-            postImage: value
-        );
-      }).catchError((error) {
-        emit(CreatePostSuccessState());
-      });
-    }).catchError((error) {
-      emit(CreatePostErrorState());
-    });
-  }
-
 
   File? postImage;
   Future<void> getPostImageFromDevice() async {
@@ -206,6 +177,37 @@ class HomeCubit extends Cubit<HomeState> {
       emit(PostImagePickedErrorState());
     }
   }
+
+  void uploadPostImage(
+      {
+        required String dateTime,
+        required String text,
+      }
+      ) {
+    emit(CreatePostLoadingState());
+    final storage = FirebaseStorage.instance;
+    storage
+        .ref()
+        .child('posts/${Uri.file(postImage!.path).pathSegments.last}')
+        .putFile(postImage!)
+        .then((value) {
+      value.ref.getDownloadURL().then((value) {
+        print(value);
+        createPost(
+            dateTime: dateTime,
+            text: text,
+            postImage: value
+        );
+      }).catchError((error) {
+        emit(CreatePostErrorState());
+      });
+    }).catchError((error) {
+      emit(CreatePostErrorState());
+    });
+  }
+
+
+
 
 
   void createPost({
