@@ -19,7 +19,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   static HomeCubit get(context) => BlocProvider.of(context);
   UserModel? userModel;
-  void getData() {
+
+  void getUserData() {
     emit(HomeGetUserLoading());
     print(uId);
     FirebaseFirestore.instance.collection('users').doc(uId).get().then((value) {
@@ -155,7 +156,7 @@ class HomeCubit extends Cubit<HomeState> {
     doc(uId).
     update(model.toMap()).
     then((value) {
-      getData();
+      getUserData();
     }).
     catchError((error){
       print(error.toString());
@@ -176,6 +177,12 @@ class HomeCubit extends Cubit<HomeState> {
       print('No error selected');
       emit(PostImagePickedErrorState());
     }
+  }
+
+  void removePostImageFromDevice() 
+  {
+    postImage = null;
+    emit(RemovePostImagePickedState());
   }
 
   void uploadPostImage(
@@ -217,7 +224,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   }){
 
-    emit(UserUpdateLoadingState());
+    emit(CreatePostLoadingState());
     PostModel model = PostModel(
       name: userModel!.name,
       image: userModel!.image,
@@ -229,14 +236,29 @@ class HomeCubit extends Cubit<HomeState> {
     FirebaseFirestore.
     instance.
     collection('posts').
-    doc('1').
-    set(model.toMap()).
+    add(model.toMap()).
     then((value) {
       emit(CreatePostSuccessState());
     }).
     catchError((error){
       print(error.toString());
       emit(CreatePostErrorState());
+    });
+  }
+
+  List<PostModel> posts = [];
+  void getPosts(){
+    FirebaseFirestore.instance
+        .collection('posts')
+        .get()
+        .then((value){
+          for (var element in value.docs) {
+            posts.add(PostModel.fromJson(element.data()));
+          }
+          emit(GetPostsSuccess());
+    })
+        .catchError((error){
+          emit(GetPostsError(error: error.toString()));
     });
   }
 }

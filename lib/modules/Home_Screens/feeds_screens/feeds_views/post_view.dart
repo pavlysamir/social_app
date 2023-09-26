@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:social_app/layouts/home_layout/cupit/home_cubit.dart';
+import 'package:social_app/models/post_model.dart';
 
 import '../../../../shared/styles/convert_font.dart';
 
 
 
 class PostViewItem extends StatelessWidget {
-  const PostViewItem({Key? key}) : super(key: key);
-
+  PostViewItem({Key? key,required this.postModel}) : super(key: key);
+  PostModel postModel;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -18,13 +20,14 @@ class PostViewItem extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  const CircleAvatar(
+                   CircleAvatar(
                     radius: 25,
                     backgroundImage: NetworkImage(
-                        'https://img.freepik.com/free-photo/happy-boy-little-cute-adorable-white-t-shirt-blue-jeans-pink_179666-322.jpg?w=996&t=st=1693699910~exp=1693700510~hmac=de9c296e4a707363e877f674d5bf55c45ed9a951c7efae0a6a56b4da8090ba24'),
+                        '${postModel.image}'),
                   ),
                   const SizedBox(
                     width: 15,
@@ -36,7 +39,7 @@ class PostViewItem extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              'Bavly samir',
+                              '${postModel.name}',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge!
@@ -53,7 +56,7 @@ class PostViewItem extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          'march 21, 2021 at 11:00 pm',
+                          '${postModel.dateTime}',
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
@@ -81,7 +84,7 @@ class PostViewItem extends StatelessWidget {
                   color: Colors.grey[300],
                 ),
               ),
-              Text('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+              Text('${postModel.text}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               Padding(
@@ -119,19 +122,25 @@ class PostViewItem extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.18,
-                width: MediaQuery.of(context).size.width,
-                decoration:const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            'https://img.freepik.com/premium-photo/indoor-portrait-young-ginger-female-with-freckles-posing-pink-background_295783-16909.jpg'
-                        ),fit: BoxFit.cover
-                    )
+              ), //tags
+              if(postModel.postImage != '')
+                Padding(
+                padding: const EdgeInsets.only(
+                  top: 15
                 ),
-              ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.18,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      image: DecorationImage(
+                          image: NetworkImage(
+                              '${postModel.image}'
+                          ),fit: BoxFit.cover
+                      )
+                  ),
+                ),
+              ), // image
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
                 child: Row(
@@ -148,7 +157,7 @@ class PostViewItem extends StatelessWidget {
                                 color: Colors.red,
                               ),
                               const SizedBox(width: 5,),
-                              Text('120',style: Theme.of(context).textTheme.bodySmall,)
+                              Text('0',style: Theme.of(context).textTheme.bodySmall,)
                             ],
                           ),
                         ),
@@ -168,7 +177,7 @@ class PostViewItem extends StatelessWidget {
                                 color: Colors.amber,
                               ),
                               const SizedBox(width: 5,),
-                              Text('120 comments',style: Theme.of(context).textTheme.bodySmall,)
+                              Text('0 comments',style: Theme.of(context).textTheme.bodySmall,)
                             ],
                           ),
                         ),
@@ -191,10 +200,10 @@ class PostViewItem extends StatelessWidget {
                         onTap: (){},
                         child: Row(
                           children: [
-                            const CircleAvatar(
+                             CircleAvatar(
                               radius: 15,
                               backgroundImage: NetworkImage(
-                                  'https://img.freepik.com/free-photo/happy-boy-little-cute-adorable-white-t-shirt-blue-jeans-pink_179666-322.jpg?w=996&t=st=1693699910~exp=1693700510~hmac=de9c296e4a707363e877f674d5bf55c45ed9a951c7efae0a6a56b4da8090ba24'),
+                                  '${HomeCubit.get(context).userModel!.image}'),
                             ),
                             const SizedBox(
                               width: 15,

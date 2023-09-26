@@ -39,3 +39,16 @@ class CreatePostErrorState extends HomeState {}
 
 class PostImagePickedSuccessState extends HomeState{}
 class PostImagePickedErrorState extends HomeState{}
+class RemovePostImagePickedState extends HomeState{}
+
+class GetPostsSuccess extends HomeState {}
+class GetPostsLoading extends HomeState {}
+class GetPostsError extends HomeState {
+  String error;
+  GetPostsError({required this.error});
+}
+class LikePostsSuccess extends HomeState {}
+class LikePostsError extends HomeState {
+  String error;
+  LikePostsError({required this.error});
+}
