@@ -81,10 +81,11 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  void uploadProfileImage(
-      {required String name,
+  void uploadProfileImage({
+    required String name,
     required String phone,
-    required String bio,}) {
+    required String bio,
+  }) {
     emit(UserUpdateLoadingState());
     final storage = FirebaseStorage.instance;
     storage
@@ -95,8 +96,7 @@ class HomeCubit extends Cubit<HomeState> {
       value.ref.getDownloadURL().then((value) {
         //emit(UploadProfileImageSuccessState());
         print(value);
-        updateUser(name:name,phone: phone,bio: bio,image: value );
-
+        updateUser(name: name, phone: phone, bio: bio, image: value);
       }).catchError((error) {
         emit(UploadProfileImageErrorState());
       });
@@ -105,12 +105,11 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-
-  void uploadCoverImage(
-  {required String name,
+  void uploadCoverImage({
+    required String name,
     required String phone,
-    required String bio,}
-      ) {
+    required String bio,
+  }) {
     emit(UserUpdateLoadingState());
     final storage = FirebaseStorage.instance;
     storage
@@ -121,7 +120,7 @@ class HomeCubit extends Cubit<HomeState> {
       value.ref.getDownloadURL().then((value) {
         //emit(UploadCoverImageSuccessState());
         print(value);
-        updateUser(name:name,phone: phone,bio: bio,cover: value );
+        updateUser(name: name, phone: phone, bio: bio, cover: value);
       }).catchError((error) {
         emit(UploadCoverImageErrorState());
       });
@@ -130,40 +129,34 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-
   void updateUser({
     required String name,
     required String phone,
     required String bio,
-
-    String? cover ,
-    String? image ,
-  }){
-
+    String? cover,
+    String? image,
+  }) {
     emit(UserUpdateLoadingState());
     UserModel model = UserModel(
       name: name,
       phone: phone,
       email: userModel!.email,
-      image: image??userModel!.image,
-      cover: cover??userModel!.cover,
+      image: image ?? userModel!.image,
+      cover: cover ?? userModel!.cover,
       bio: bio,
       uId: userModel!.uId,
     );
-    FirebaseFirestore.
-    instance.
-    collection('users').
-    doc(uId).
-    update(model.toMap()).
-    then((value) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .update(model.toMap())
+        .then((value) {
       getUserData();
-    }).
-    catchError((error){
+    }).catchError((error) {
       print(error.toString());
       emit(UserUpdateErrorState());
     });
   }
-
 
   File? postImage;
   Future<void> getPostImageFromDevice() async {
@@ -179,18 +172,15 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  void removePostImageFromDevice() 
-  {
+  void removePostImageFromDevice() {
     postImage = null;
     emit(RemovePostImagePickedState());
   }
 
-  void uploadPostImage(
-      {
-        required String dateTime,
-        required String text,
-      }
-      ) {
+  void uploadPostImage({
+    required String dateTime,
+    required String text,
+  }) {
     emit(CreatePostLoadingState());
     final storage = FirebaseStorage.instance;
     storage
@@ -200,11 +190,7 @@ class HomeCubit extends Cubit<HomeState> {
         .then((value) {
       value.ref.getDownloadURL().then((value) {
         print(value);
-        createPost(
-            dateTime: dateTime,
-            text: text,
-            postImage: value
-        );
+        createPost(dateTime: dateTime, text: text, postImage: value);
       }).catchError((error) {
         emit(CreatePostErrorState());
       });
@@ -213,17 +199,11 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-
-
-
-
   void createPost({
     required String dateTime,
     required String text,
-     String? postImage,
-
-  }){
-
+    String? postImage,
+  }) {
     emit(CreatePostLoadingState());
     PostModel model = PostModel(
       name: userModel!.name,
@@ -231,34 +211,44 @@ class HomeCubit extends Cubit<HomeState> {
       uId: userModel!.uId,
       text: text,
       dateTime: dateTime,
-      postImage: postImage??'',
+      postImage: postImage ?? '',
     );
-    FirebaseFirestore.
-    instance.
-    collection('posts').
-    add(model.toMap()).
-    then((value) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .add(model.toMap())
+        .then((value) {
       emit(CreatePostSuccessState());
-    }).
-    catchError((error){
+    }).catchError((error) {
       print(error.toString());
       emit(CreatePostErrorState());
     });
   }
 
   List<PostModel> posts = [];
-  void getPosts(){
+  List<String> postsId = [];
+  void getPosts() {
+    FirebaseFirestore.instance.collection('posts').get().then((value) {
+
+      for (var element in value.docs) {
+        posts.add(PostModel.fromJson(element.data()));
+        postsId.add(element.id);
+      }
+      emit(GetPostsSuccess());
+    }).catchError((error) {
+      emit(GetPostsError(error: error.toString()));
+    });
+  }
+
+  void likePosts(String postId) {
     FirebaseFirestore.instance
         .collection('posts')
-        .get()
-        .then((value){
-          for (var element in value.docs) {
-            posts.add(PostModel.fromJson(element.data()));
-          }
-          emit(GetPostsSuccess());
-    })
-        .catchError((error){
-          emit(GetPostsError(error: error.toString()));
+        .doc(postId)
+        .collection('likes')
+        .doc(userModel!.uId)
+        .set({'like': true}).then((value) {
+      emit(LikePostsSuccess());
+    }).catchError((error) {
+      emit(LikePostsError(error: error.toString()));
     });
   }
 }

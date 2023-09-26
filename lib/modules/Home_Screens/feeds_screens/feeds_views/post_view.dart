@@ -7,8 +7,9 @@ import '../../../../shared/styles/convert_font.dart';
 
 
 class PostViewItem extends StatelessWidget {
-  PostViewItem({Key? key,required this.postModel}) : super(key: key);
+  PostViewItem({Key? key,required this.postModel,required this.index}) : super(key: key);
   PostModel postModel;
+  int index;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -147,7 +148,9 @@ class PostViewItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: InkWell(
-                        onTap: (){},
+                        onTap: (){
+
+                        },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Row(
@@ -224,7 +227,9 @@ class PostViewItem extends StatelessWidget {
                       ),
                     ),
                     InkWell(
-                      onTap: (){},
+                      onTap: (){
+                        HomeCubit.get(context).likePosts(HomeCubit.get(context).postsId[index]);
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Row(

@@ -16,7 +16,7 @@ class FeedsScreen extends StatelessWidget {
       },
       builder: (context, state) {
         return ConditionalBuilder(
-            condition: HomeCubit.get(context).posts.isNotEmpty,
+            condition: HomeCubit.get(context).posts.isNotEmpty && HomeCubit.get(context).userModel != null,
             builder: (context)=>SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
@@ -48,7 +48,10 @@ class FeedsScreen extends StatelessWidget {
                         ],
                       )),
                   ListView.builder(
-                    itemBuilder: (context, index) => PostViewItem(postModel: HomeCubit.get(context).posts[index]),
+                    itemBuilder: (context, index) => PostViewItem(
+                        postModel: HomeCubit.get(context).posts[index],
+                        index: index
+                    ),
                     itemCount: HomeCubit.get(context).posts.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
